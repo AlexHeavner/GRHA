@@ -1,0 +1,9 @@
+<?php
+session_start();
+$_SESSION['login']=null;
+$_SESSION['username']=null;
+if(isset($_SESSION['admin'])){
+	$_SESSION['admin']=null;
+}
+header('Location:adminLogin.php');
+?>

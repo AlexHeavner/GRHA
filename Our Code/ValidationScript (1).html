@@ -1,0 +1,137 @@
+<script type="text/javascript">
+    
+    //boolean expressions to test before submit
+    var isValidFirstName = true;
+    var isValidLastName = true;
+    var isValidAddress = true;
+    var isValidCity = true;
+    var isValidState = true;
+    var isValidZip = true;
+    var isValidPhone = true;
+    var isValidEmail = true;
+   
+    //Begin First Name Verification
+    firstName = document.getElementById("firstname");
+    firstName.onblur=function(){
+        var FNameError = document.getElementById("FNameLabel");
+        if(firstName.value===""){
+            FNameError.innerHTML="<br>First Name Required!";
+        }
+        else{
+            FNameError.innerHTML="";
+        }
+    }
+    
+    //Begin Last Name Validation
+    lastName = document.getElementById("lastname");
+    lastName.onblur=function(){
+        var LNameError = document.getElementById("LNameLabel");
+        if(lastName.value===""){
+            LNameError.innerHTML="<br>Last Name Required!";
+            isValidLastName = false;
+        }
+        else{
+            LNameError.innerHTML="";
+            isValidLastName = true;
+        }
+    }
+    
+    //Begin Address Validation
+    address = document.getElementById("address");
+    address.onblur=function(){
+        var AddressError = document.getElementById("AddressLabel");
+        if(address.value===""){
+            AddressError.innerHTML="<br>Address Required!";
+            isValidAddress=false;
+        }
+        else{
+            AddressError.innerHTML="";
+            isValidAddress=true;
+        }
+    }
+    
+    //Begin City Validation
+    city = document.getElementById("city");
+    city.onblur=function(){
+        var CityError = document.getElementById("CityLabel");
+        if(city.value===""){
+            CityError.innerHTML="<br>City Required!";
+            isValidCity = false;
+        }
+        else{
+            CityError.innerHTML="";
+            isValidCity = true;
+        }
+    }
+    //Begin State Validation
+    state = document.getElementById("state");
+    state.onblur=function(){
+        var StateError = document.getElementById("StateLabel");
+        if(state.value===""){
+            StateError.innerHTML="<br>State Required!";
+            isValidState = false;
+        }
+        else{
+            StateError.innerHTML="";
+            isValidState = true;
+        }
+    }
+    //Begin Zip Validation
+    zip = document.getElementById("zip");
+    zip.onblur=function(){
+        var ZipError = document.getElementById("ZipLabel");
+        if(zip.value===""){
+            ZipError.innerHTML="<br>Zip Code Required! (5-Digits)";
+            isValidZip = false;
+        }
+        else{
+            ZipError.innerHTML="";
+            isValidZip = true;
+        }
+    }
+    //Begin Phone Validation
+    phone = document.getElementById("phone");
+    phone.onblur=function(){
+        var phoneno = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;  
+        var PhoneError = document.getElementById("PhoneLabel");
+        if(phone.value===""){
+            PhoneError.innerHTML="<br>Phone Number Required! <br>example: 999-999-9999";
+            isValidPhone = false;
+        }
+        else if(phone.value.match(phoneno)){
+            PhoneError.innerHTML="";
+            isValidPhone = true;
+        }
+        else{
+           PhoneError.innerHTML="<br>Please enter a valid Phone Number.<br>example:     999-999-9999";
+            isValidPhone=false;
+        }
+    }
+    
+    //Begin Email Validation
+    email = document.getElementById("email");
+    email.onblur=function(){
+        var EmailError = document.getElementById("EmailLabel");
+        if(email.value===""){
+            EmailError.innerHTML="<br>Email Required!<br>Example: myname@contoso.com";
+            isValidEmail=false;
+        }
+        else{
+            EmailError.innerHTML="";
+            isValidEmail=true;
+        }
+    }
+    
+    //Test All Validations
+    function allValid()
+    {              
+        if(isValidAddress && isValidCity && isValidEmail && isValidFirstName &&         isValidLastName && isValidPhone && isValidState && isValidZip){
+            return true;   
+        }
+        else{ 
+            return false;
+        }
+    }
+    
+   
+</script>

@@ -1,0 +1,191 @@
+<?php
+require_once 'dbOps.php';
+require_once 'htmlfuncs.php';
+session_start(); 
+html_header();
+?>
+	<label id = "username">Username:</label>
+	<input type="text" name="usernameinput" id="nameId">
+	<label id="password">Password:</label>
+	<input type="password" name="passwordinput" id="pwdId">
+	<input name="admin" type="submit" id="submit" value="Log In">
+	<div id="eMName"></div>
+	<div id="eMPwd"></div>
+	<div id ="error"></div>
+	<br>
+<?php
+/*if(isset($_POST['admin'])){
+	$username = array_key_exists('username', $_POST) ? $_POST['username'] : null;
+	$tempPassword = array_key_exists('password', $_POST) ? $_POST['password'] : null;
+	
+	//Salt and hash the password. Function Located in htmlfuncs.php
+	$password = saltPassword($tempPassword);
+	
+	$usernameLookup = "SELECT username FROM admin WHERE username='$username' and password='$password'";
+	$lookup = mysql_query($usernameLookup);
+	if(!$lookup) die ("Database Error".mysql_error());
+	else
+	{
+		$row = mysql_fetch_row($lookup);
+		if(!$row[0]==$username){
+			Echo "Sorry, unknown username and/or password";
+			printAdminLoginForm();
+		}
+		else
+		{
+			echo "You are now logged in as $username<br><br>";
+			echo "<a href=\"siteAdministration.php\">Admin Section</a>";
+			$_SESSION['login'] = 1;
+			$_SESSION['username'] = $username;
+			$_SESSION['admin'] = 1;
+		}
+	}
+}
+else{
+
+	?>
+	<label id = "username">Username:</label>
+	<input type="text" name="usernameinput" id="nameId">
+	<label id="password">Password:</label>
+	<input type="password" name="passwordinput" id="pwdId">
+	<input name="admin" type="submit" id="submit" value="Log In">
+	<div id="eMName"></div>
+	<div id="eMPwd"></div>
+	<div id ="error"></div>
+	<br>
+	<!--<form id="admin" name="admin" method="post" onsubmit="return allValid()" action="adminLogin.php">
+		Username: <input id="nameId" name="username" type="textfield">
+				  <label id="eMName"> </label>
+				  <br><br>
+		Password: <input id="pwdId" name="password" type="password">
+				  <label id="eMPwd"> </label>
+		<br>
+		<input name="admin" type="submit" id="button" value="Log In">
+	</form>-->
+	<?php
+}*/
+html_footer();
+
+//not used
+function printAdminLoginForm(){
+	echo <<<_END
+
+	<label id = "username">Username:</label>
+	<input type="text" name="usernameinput" id="nameId">
+	<label id="password">Password:</label>
+	<input type="password" name="passwordinput" id="pwdId">
+	<input name="admin" type="submit" id="button" value="Log In">
+	<div id="eMName"></div>
+	<div id="eMPwd"></div>
+	<br>
+	<!--<form id="admin" name="admin" method="post" onsubmit="return allValid()" action="adminLogin.php">
+		Username: <input id="nameId" name="username" type="textfield">
+				  <label id="eMName"> </label>
+				  <br><br>
+		Password: <input id="pwdId" name="password" type="password">
+				  <label id="eMPwd"> </label>
+		<br>
+		<input name="admin" type="submit" id="button" value="Log In">
+	</form>-->
+_END;
+}
+?>
+<script>
+	isValidName=true;
+	isValidPassword=true;  //Because in the validation process, if you find an error this will be changed to false. Else, submit is allowed.
+	idName = document.getElementById("nameId");
+	idPwd = document.getElementById("pwdId");
+	submitButton = document.getElementById("submit");
+	error = document.getElementById("error");
+	
+	idName.onblur=function(){
+		var errorLabel1 = document.getElementById("eMName");
+		if(idName.value===""){
+			errorLabel1.innerHTML="Username cannot be empty";
+			isValidName=false;
+		}
+		else if(/[^a-zA-Z0-9-_]/.test(idName.value)){  //if it's not all lowercase or upercase or numbers then do this.
+			errorLabel1.innerHTML="Username can only have letters a-z, A-Z and numbers 0-9 and - and _";
+			isValidName=false;
+		}
+		else
+		{
+			errorLabel1.innerHTML="";
+			isValidName=true;
+		}
+	}  //end of username on blur
+	
+	idPwd.onblur=function(){
+		var errorLabel2 = document.getElementById("eMPwd");
+		if(idPwd.value===""){
+			errorLabel2.innerHTML="Password cannot be empty";
+			isValidPassword=false;
+		}
+		else if(idPwd.value.length<5)
+		{
+			errorLabel2.innerHTML="Password length must be greater than 5 characters!";
+			isValidPassword = false;
+		}
+		else
+		{
+			errorLabel2.innerHTML="";
+			isValidPassword = true;
+		}
+	} //end of password on blur
+
+	submitButton.onclick = function()
+	{
+		var username = idName.value;
+		var password = idPwd.value;
+
+		var url = "adminloginajax.php";
+		var params = "username=" + encodeURIComponent(username )+ "&password=" + encodeURIComponent(password);
+
+		var request = ajaxRequest();
+
+		request.open("POST",url, true);
+		request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		request.setRequestHeader("Content-length", params.length);
+		request.setRequestHeader("Connection", "close");
+		request.send(params);
+
+		request.onreadystatechange = function()
+		{
+			if(this.readyState == 4)
+			{	
+				if(this.responseText === "Sorry, unknown username and/or password")
+					error.innerHTML = "<span style =\"color: red;\">"+ this.responseText + "</span>";
+
+				else
+				{
+					alert(this.responseText);
+					window.location = "http://alexanderheavner.com/GHRA/join/siteAdministration.php";
+				}		
+			}
+		}		
+	}
+	
+	function allValid()
+	{
+		if(isValidName && isValidPassword)
+			return true;
+		else
+			return false;
+	}	
+
+	function ajaxRequest()
+	{
+		try
+		{
+			var request = new XMLHttpRequest();
+		}
+		catch(e)
+		{
+			request = new ActiveXObject("Msxml2.XMLHTTP")
+		}
+
+		return request;
+	}
+
+</script>
+
